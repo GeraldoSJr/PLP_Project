@@ -3,7 +3,8 @@ module GeradorDeCupons (
     HashTable,
     criarTabelaHashVazia,
     adicionarStringAleatoria,
-    buscarValorAssociado
+    buscarValorAssociado,
+    removerCodigoPorChave
 ) where
 
 import qualified Data.Map as Map
