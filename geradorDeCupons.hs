@@ -31,6 +31,16 @@ adicionarStringAleatoria refHashTable chave valor = do
                                 Nothing -> [(randomStr,valor)]
         in Map.insert chave listaAtualizada tabelaHash
 
+-- Função para remover um código gerado aleatoriamente da lista associada a uma chave
+removerCodigoPorChave :: String -> String -> HashTable -> HashTable
+removerCodigoPorChave chave codigo tabelaHash =
+    let novaLista = case Map.lookup chave tabelaHash of
+                        Just listaAntiga -> filter (\(str, _) -> str /= codigo) listaAntiga
+                        Nothing -> []
+    in if null novaLista
+       then Map.delete chave tabelaHash
+       else Map.insert chave novaLista tabelaHash
+
 -- Função que busca o valor associado a uma string aleatória
 buscarValorAssociado :: IORef HashTable -> String -> IO (Maybe Double)
 buscarValorAssociado refHashTable randomStr = do
