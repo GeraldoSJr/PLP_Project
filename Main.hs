@@ -1,7 +1,10 @@
-
+import GeradorDeCupons
 
 main :: IO()
 main = do
+
+    hashCodigoCupom <- criarTabelaHashVazia
+
     putStrLn "Bem vindo a caixa registradora P.L.P.!\nPor favor escolha uma das opções abaixo:"
     putStrLn "1.Criar login de acesso\n2.Efetuar login"
     putStrLn "3.Criar produto\n4.Ler produto\n5.Atualizar produto\n6.Deletar produto"
