@@ -27,8 +27,8 @@ adicionarStringAleatoria refHashTable chave valor = do
     randomStr <- gerarStringAleatoria 8
     modifyIORef refHashTable $ \tabelaHash ->
         let listaAtualizada = case Map.lookup chave tabelaHash of
-                                Just listaAntiga -> (randomStr, valor) : listaAntiga
-                                Nothing -> [(randomStr, valor)]
+                                Just listaAntiga -> (randomStr,valor) : listaAntiga
+                                Nothing -> [(randomStr,valor)]
         in Map.insert chave listaAtualizada tabelaHash
 
 -- Função que busca o valor associado a uma string aleatória
