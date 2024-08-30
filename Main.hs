@@ -2,6 +2,8 @@ module Main where
 
 import GeradorDeCupons
 import Menu(exibirMenu)
+import Login (bancoDeDados)
+import Data.IORef (newIORef)
 
 main :: IO ()
 main = do

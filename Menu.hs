@@ -1,7 +1,8 @@
 module Menu (exibirMenu) where
 
-import GeradorDeCupons (HashTable, adicionarStringAleatoria, buscarValorAssociado)
-import Data.IORef (IORef)
+import GeradorDeCupons (HashTable)
+import Login (criarLogin, efetuarLogin, Funcao(..), bancoDeDados)
+import Data.IORef (IORef, newIORef)
 import Control.Monad (when)
 
 exibirMenu :: IORef HashTable -> IO ()
@@ -20,9 +21,31 @@ exibirMenu hashCodigoCupom = do
 
     let escolha = read input :: Int
 
+    refDb <- newIORef []
+
     case escolha of
-        1 -> 
-        2 -> 
+        1 ->  do
+            putStrLn "Digite o nome de usuário:"
+            usuario <- getLine
+            putStrLn "Digite a senha:"
+            senha <- getLine
+            putStrLn "Escolha a função (1 para Gerente, 2 para Caixa):"
+            funcaoInput <- getLine
+            let funcao = if funcaoInput == "1" then Gerente else Caixa
+            criarLogin refDb usuario senha funcao
+            putStrLn "Login criado com sucesso!"
+            exibirMenu hashCodigoCupom
+        2 -> do
+            putStrLn "Digite o nome de usuário:"
+            usuario <- getLine
+            putStrLn "Digite a senha:"
+            senha <- getLine
+            funcao <- efetuarLogin refDb usuario senha
+            case funcao of
+                Just Gerente -> putStrLn "Bem-vindo, Gerente!"
+                Just Caixa   -> putStrLn "Bem-vindo, Caixa!"
+                Nothing      -> putStrLn "Login falhou! Verifique suas credenciais."
+                exibirMenu hashCodigoCupom
         3 -> 
         4 -> 
         5 -> 
