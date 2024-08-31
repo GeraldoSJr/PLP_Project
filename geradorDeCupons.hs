@@ -22,8 +22,9 @@ criarTabelaHashVazia = newIORef Map.empty
 gerarStringAleatoria :: Int -> IO String
 gerarStringAleatoria length = sequence $ replicate length (randomRIO ('a', 'z'))
 
--- Função que adiciona uma string aleatória à lista associada a uma chave
-adicionarStringAleatoria :: IORef HashTable -> String -> Double -> IO ()
+-- Função que adiciona uma string aleatória à lista associada a uma chave, e retorna a string
+-- aleatória gerada
+adicionarStringAleatoria :: IORef HashTable -> String -> Double -> IO String
 adicionarStringAleatoria refHashTable chave valor = do
     randomStr <- gerarStringAleatoria 8
     modifyIORef refHashTable $ \tabelaHash ->
@@ -31,6 +32,7 @@ adicionarStringAleatoria refHashTable chave valor = do
                                 Just listaAntiga -> (randomStr,valor) : listaAntiga
                                 Nothing -> [(randomStr,valor)]
         in Map.insert chave listaAtualizada tabelaHash
+    return randomStr
 
 -- Função para remover um código gerado aleatoriamente da lista associada a uma chave
 removerCodigoPorChave :: String -> String -> HashTable -> HashTable
