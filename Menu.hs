@@ -45,14 +45,24 @@ exibirMenu hashCodigoCupom = do
                 Just Gerente -> putStrLn "Bem-vindo, Gerente!"
                 Just Caixa   -> putStrLn "Bem-vindo, Caixa!"
                 Nothing      -> putStrLn "Login falhou! Verifique suas credenciais."
-                exibirMenu hashCodigoCupom
-        3 -> 
-        4 -> 
-        5 -> 
-        6 -> 
-        7 -> 
-        _ -> putStrLn "Opção inválida"
+            exibirMenu hashCodigoCupom
+        3 -> do
+            putStrLn "Opção Criar produto não implementada ainda"
+            exibirMenu hashCodigoCupom
+        4 -> do
+            putStrLn "Opção Ler produto não implementada ainda"
+            exibirMenu hashCodigoCupom
+        5 -> do
+            putStrLn "Opção Atualizar produto não implementada ainda"
+            exibirMenu hashCodigoCupom
+        6 -> do
+            putStrLn "Opção Deletar produto não implementada ainda"
+            exibirMenu hashCodigoCupom
+        7 -> do
+            putStrLn "Opção Gerar relatório não implementada ainda"
+            exibirMenu hashCodigoCupom
+        _ -> do
+            putStrLn "Opção inválida"
+            exibirMenu hashCodigoCupom
 
-    if escolha `notElem` [1,2,3,4,5,6,7]
-        then exibirMenu hashCodigoCupom
-        else return()
+    return ()
