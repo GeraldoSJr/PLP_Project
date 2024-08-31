@@ -5,6 +5,9 @@ import Menu(exibirMenu)
 import Login (bancoDeDados)
 import Data.IORef (newIORef)
 
+-- ghc -package containers -o programa Main.hs para compilar o programa
+-- .\programa.exe para rodar o programa
+
 main :: IO ()
 main = do
     hashCodigoCupom <- criarTabelaHashVazia
