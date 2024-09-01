@@ -22,7 +22,7 @@ lerDouble :: String -> Maybe Double
 lerDouble = readMaybe
 
 -- Função principal para exibir o menu
-exibirMenu :: IORef [Item] -> IORef Hashtable -> IO ()
+exibirMenu :: IORef [Item] -> IORef HashTable -> IO ()
 exibirMenu refEstoque hashCodigoCupom = do
     putStrLn "Por favor escolha uma das opções abaixo:"
     putStrLn "1. Criar login de acesso"
