@@ -2,7 +2,7 @@ module Menu (exibirMenu) where
 
 import GeradorDeCupons (HashTable)
 import Login (criarLogin, efetuarLogin, Funcao(..), Funcionario)
-import Item (Item(..), salvarEstoque, carregarEstoque, adicionarItem, updateItem, deleteItem, listItems, getEstoque, setEstoque, getPreco, setPreco, readItem)
+import Item (Item(..), salvarEstoque, carregarEstoque, adicionarItem, updateItem, deleteItem, listItems, getEstoque, setEstoque, getPreco, setPreco, readItem, readItemByName)
 import Relatorio (registrarAcao, gerarRelatorio)
 import Data.IORef (IORef, newIORef, readIORef, writeIORef)
 import Control.Monad (when)
@@ -77,25 +77,40 @@ exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual = do
                     precoInput <- obterInput "Digite o preço do produto:"
                     case (lerInt estoqueInput, lerDouble precoInput) of
                         (Just estoque, Just preco) -> do
-                            let novoProduto = Item { itemId = 1, itemNome = nome, itemEstoque = estoque, itemPreco = preco } -- Gerar ID dinamicamente
                             itens <- readIORef refEstoque
+                            let novoId = if null itens 
+                                        then 1 
+                                        else 1 + maximum (map itemId itens) -- Encontra o maior ID atual e incrementa
+                            let novoProduto = Item { itemId = novoId, itemNome = nome, itemEstoque = estoque, itemPreco = preco }
                             let itensAtualizados = adicionarItem novoProduto itens
                             writeIORef refEstoque itensAtualizados
                             salvarEstoque itensAtualizados
-                            putStrLn "Produto criado com sucesso!"
+                            putStrLn $ "Produto criado com sucesso! ID do produto: " ++ show novoId
                         _ -> putStrLn "Entrada inválida. Tente novamente."
                     exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
 
-
                 Just 4 -> do
-                    idInput <- obterInput "Digite o ID do produto para ler:"
-                    case lerInt idInput of
-                        Just id -> do
+                    opcao <- obterInput "Como deseja procurar o produto? (1) ID (2) Nome:"
+                    case lerInt opcao of
+                        Just 1 -> do
+                            idInput <- obterInput "Digite o ID do produto para ler:"
+                            case lerInt idInput of
+                                Just id -> do
+                                    itens <- readIORef refEstoque
+                                    case readItem itens id of
+                                        Just item -> putStrLn $ "Produto: " ++ show item
+                                        Nothing -> putStrLn "Produto não encontrado."
+                                _ -> putStrLn "ID inválido. Tente novamente."
+                        
+                        Just 2 -> do
+                            nomeInput <- obterInput "Digite o nome do produto para ler:"
                             itens <- readIORef refEstoque
-                            case readItem itens id of
+                            case readItemByName itens nomeInput of
                                 Just item -> putStrLn $ "Produto: " ++ show item
                                 Nothing -> putStrLn "Produto não encontrado."
-                        _ -> putStrLn "ID inválido. Tente novamente."
+        
+                        _ -> putStrLn "Opção inválida. Tente novamente."
+                    
                     exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
 
 
