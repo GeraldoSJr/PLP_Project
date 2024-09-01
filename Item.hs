@@ -117,3 +117,8 @@ setPreco items itemId newPreco =
             return updatedItems
         Nothing -> return items -- Ou poderia retornar um erro ou valor padrão se o item não for encontrado
 
+readItemByName :: [Item] -> String -> Maybe Item
+readItemByName [] _ = Nothing
+readItemByName (x:xs) nome 
+    | itemNome x == nome = Just x
+    | otherwise          = readItemByName xs nome

@@ -1,0 +1,3 @@
+2024-09-01 21:07:07 - Login criado: abc como Gerente
+2024-09-01 21:07:12 - Login efetuado: abc como Gerente
+2024-09-01 21:07:16 - Relatório gerado.
