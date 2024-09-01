@@ -1,7 +1,7 @@
 module Menu (exibirMenu) where
 
 import GeradorDeCupons (HashTable)
-import Login (criarLogin, efetuarLogin, Funcao(..), bancoDeDados)
+import Login (criarLogin, efetuarLogin, Funcao(..), Funcionario)
 import Item (Item(..), salvarEstoque, carregarEstoque, adicionarItem, updateItem, deleteItem, listItems, getEstoque, setEstoque, getPreco, setPreco, readItem)
 import Data.IORef (IORef, newIORef, readIORef, writeIORef)
 import Control.Monad (when)
@@ -22,8 +22,8 @@ lerDouble :: String -> Maybe Double
 lerDouble = readMaybe
 
 -- Função principal para exibir o menu
-exibirMenu :: IORef [Item] -> IORef HashTable -> IO ()
-exibirMenu refEstoque hashCodigoCupom = do
+exibirMenu :: IORef [Item] -> IORef [Funcionario] -> IORef HashTable -> Maybe Funcao -> IO ()
+exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual = do
     putStrLn "Por favor escolha uma das opções abaixo:"
     putStrLn "1. Criar login de acesso"
     putStrLn "2. Efetuar login"
@@ -49,21 +49,27 @@ exibirMenu refEstoque hashCodigoCupom = do
             putStrLn "Escolha a função (1 para Gerente, 2 para Caixa):"
             funcaoInput <- getLine
             let funcao = if funcaoInput == "1" then Gerente else Caixa
-            criarLogin refEstoque usuario senha funcao
+            criarLogin refFuncionarios usuario senha funcao
             putStrLn "Login criado com sucesso!"
-            exibirMenu refEstoque hashCodigoCupom
+            exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
 
         Just 2 -> do
             putStrLn "Digite o nome de usuário:"
             usuario <- getLine
             putStrLn "Digite a senha:"
             senha <- getLine
-            funcao <- efetuarLogin refEstoque usuario senha
+            funcao <- efetuarLogin refFuncionarios usuario senha
             case funcao of
-                Just Gerente -> putStrLn "Bem-vindo, Gerente!"
-                Just Caixa   -> putStrLn "Bem-vindo, Caixa!"
-                Nothing      -> putStrLn "Login falhou! Verifique suas credenciais."
-            exibirMenu refEstoque hashCodigoCupom
+                Just Gerente -> do
+                    putStrLn "Bem-vindo, Gerente!"
+                    exibirMenu refEstoque refFuncionarios hashCodigoCupom funcao
+                Just Caixa   -> do
+                    putStrLn "Bem-vindo, Caixa!"
+                    exibirMenu refEstoque refFuncionarios hashCodigoCupom funcao
+                Nothing      -> do
+                    putStrLn "Login falhou! Verifique suas credenciais."
+                    exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
+
 
         Just 3 -> when (funcaoAtual == Just Gerente) $ do
             nome <- obterInput "Digite o nome do produto:"
@@ -78,7 +84,8 @@ exibirMenu refEstoque hashCodigoCupom = do
                     salvarEstoque itensAtualizados
                     putStrLn "Produto criado com sucesso!"
                 _ -> putStrLn "Entrada inválida. Tente novamente."
-            exibirMenu refEstoque hashCodigoCupom
+            exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
+
 
         Just 4 -> do
             idInput <- obterInput "Digite o ID do produto para ler:"
@@ -89,7 +96,8 @@ exibirMenu refEstoque hashCodigoCupom = do
                         Just item -> putStrLn $ "Produto: " ++ show item
                         Nothing -> putStrLn "Produto não encontrado."
                 _ -> putStrLn "ID inválido. Tente novamente."
-            exibirMenu refEstoque hashCodigoCupom
+            exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
+
 
         Just 5 -> when (funcaoAtual == Just Gerente) $ do
             idInput <- obterInput "Digite o ID do produto para atualizar:"
@@ -108,7 +116,9 @@ exibirMenu refEstoque hashCodigoCupom = do
                             putStrLn "Produto atualizado com sucesso!"
                         Nothing -> putStrLn "Produto não encontrado."
                 _ -> putStrLn "Entrada inválida. Tente novamente."
-            exibirMenu refEstoque hashCodigoCupom
+            exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
+
+
 
         Just 6 -> when (funcaoAtual == Just Gerente) $ do
             idInput <- obterInput "Digite o ID do produto para deletar:"
@@ -120,14 +130,18 @@ exibirMenu refEstoque hashCodigoCupom = do
                     salvarEstoque itensAtualizados
                     putStrLn "Produto deletado com sucesso!"
                 _ -> putStrLn "ID inválido. Tente novamente."
-            exibirMenu refEstoque hashCodigoCupom
+            exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
+
+
 
         Just 7 -> do
             putStrLn "Gerando relatório..."
             putStrLn "não implementada"
-            exibirMenu refEstoque hashCodigoCupom
+            exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
+
 
         _ -> do
             putStrLn "Opção inválida"
-            exibirMenu refEstoque hashCodigoCupom
+            exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
+
 
