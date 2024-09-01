@@ -6,7 +6,7 @@ import Login (bancoDeDados)
 import Data.IORef (newIORef)
 
 
--- ghc -package containers -o programa Main.hs para compilar o programa
+-- ghc -package containers -package directory -o programa Main.hs para compilar o programa
 -- .\programa.exe para rodar o programa
 
 main :: IO ()
