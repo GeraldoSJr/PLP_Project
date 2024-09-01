@@ -105,9 +105,10 @@ exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual = do
                         Just 2 -> do
                             nomeInput <- obterInput "Digite o nome do produto para ler:"
                             itens <- readIORef refEstoque
-                            case readItemByName itens nomeInput of
-                                Just item -> putStrLn $ "Produto: " ++ show item
-                                Nothing -> putStrLn "Produto não encontrado."
+                            let itensComNome = readItemByName itens nomeInput
+                            if null itensComNome
+                                then putStrLn "Nenhum produto encontrado com esse nome."
+                                else putStrLn $ "Produtos encontrados: " ++ unlines (map show itensComNome)
         
                         _ -> putStrLn "Opção inválida. Tente novamente."
                     
@@ -151,7 +152,8 @@ exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual = do
 
                 Just 7 -> do
                     putStrLn "Gerando relatório..."
-                    putStrLn "não implementada"
+                    gerarRelatorio
+                    registrarAcao "Relatório gerado."
                     exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
 
 
