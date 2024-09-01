@@ -1,8 +1,8 @@
 module Main where
 
-import GeradorDeCupons
-import Menu(exibirMenu)
-import Login (bancoDeDados)
+import GeradorDeCupons (HashTable, criarTabelaHashVazia)
+import Menu (exibirMenu)
+import Login (Funcionario)
 import Data.IORef (newIORef)
 
 
@@ -11,11 +11,13 @@ import Data.IORef (newIORef)
 
 main :: IO ()
 main = do
+    -- Criar referências para os dados
     hashCodigoCupom <- criarTabelaHashVazia
-
     refEstoque <- newIORef []
+    refFuncionarios <- newIORef []  -- Criar referência para os funcionários
 
     putStrLn "Bem-vindo à caixa registradora P.L.P.!"
-    
-    exibirMenu refEstoque hashCodigoCupom
+
+    -- Passar todos os parâmetros necessários para exibirMenu
+    exibirMenu refEstoque refFuncionarios hashCodigoCupom Nothing
   

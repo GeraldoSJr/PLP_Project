@@ -1,7 +1,6 @@
 module Login (
     Funcao(..),
     Funcionario(..),
-    bancoDeDados,
     criarLogin,
     efetuarLogin
 ) where
@@ -21,8 +20,9 @@ data Funcionario = Funcionario {
 } deriving (Show)
 
 -- Pseudo Banco de dados de funcionários (em uma aplicação real, isso seria uma base de dados externa)
-bancoDeDados :: IORef [Funcionario] -> IORef [Funcionario]
-bancoDeDados refDb = refDb
+--bancoDeDados :: IORef [Funcionario] -> IORef [Funcionario]
+--bancoDeDados refDb = refDb
+-- caso precise, creio que não
 
 -- Função para criar um novo login
 criarLogin :: IORef [Funcionario] -> String -> String -> Funcao -> IO ()
