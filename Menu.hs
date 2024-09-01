@@ -3,6 +3,7 @@ module Menu (exibirMenu) where
 import GeradorDeCupons (HashTable)
 import Login (criarLogin, efetuarLogin, Funcao(..), Funcionario)
 import Item (Item(..), salvarEstoque, carregarEstoque, adicionarItem, updateItem, deleteItem, listItems, getEstoque, setEstoque, getPreco, setPreco, readItem)
+import Relatorio (registrarAcao, gerarRelatorio)
 import Data.IORef (IORef, newIORef, readIORef, writeIORef)
 import Control.Monad (when)
 import Text.Read (readMaybe)
@@ -51,6 +52,7 @@ exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual = do
             let funcao = if funcaoInput == "1" then Gerente else Caixa
             criarLogin refFuncionarios usuario senha funcao
             putStrLn "Login criado com sucesso!"
+            registrarAcao $ "Login criado: " ++ usuario ++ " como " ++ show funcao
             exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
 
         Just 2 -> do
@@ -62,12 +64,15 @@ exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual = do
             case funcao of
                 Just Gerente -> do
                     putStrLn "Bem-vindo, Gerente!"
+                    registrarAcao $ "Login efetuado: " ++ usuario ++ " como Gerente"
                     exibirMenu refEstoque refFuncionarios hashCodigoCupom funcao
                 Just Caixa   -> do
                     putStrLn "Bem-vindo, Caixa!"
+                    registrarAcao $ "Login efetuado: " ++ usuario ++ " como Caixa"
                     exibirMenu refEstoque refFuncionarios hashCodigoCupom funcao
                 Nothing      -> do
                     putStrLn "Login falhou! Verifique suas credenciais."
+                    registrarAcao $ "Tentativa de login falhou para usuário: " ++ usuario
                     exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
 
 
@@ -83,6 +88,7 @@ exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual = do
                     writeIORef refEstoque itensAtualizados
                     salvarEstoque itensAtualizados
                     putStrLn "Produto criado com sucesso!"
+                    registrarAcao $ "Produto criado: " ++ nome
                 _ -> putStrLn "Entrada inválida. Tente novamente."
             exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
 
@@ -93,7 +99,9 @@ exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual = do
                 Just id -> do
                     itens <- readIORef refEstoque
                     case readItem itens id of
-                        Just item -> putStrLn $ "Produto: " ++ show item
+                        Just item -> do
+                            putStrLn $ "Produto: " ++ show item
+                            registrarAcao $ "Produto lido: " ++ show item
                         Nothing -> putStrLn "Produto não encontrado."
                 _ -> putStrLn "ID inválido. Tente novamente."
             exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
@@ -114,6 +122,7 @@ exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual = do
                             writeIORef refEstoque itensAtualizados
                             salvarEstoque itensAtualizados
                             putStrLn "Produto atualizado com sucesso!"
+                            registrarAcao $ "Produto atualizado: " ++ show itemAtualizado
                         Nothing -> putStrLn "Produto não encontrado."
                 _ -> putStrLn "Entrada inválida. Tente novamente."
             exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
@@ -129,6 +138,7 @@ exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual = do
                     writeIORef refEstoque itensAtualizados
                     salvarEstoque itensAtualizados
                     putStrLn "Produto deletado com sucesso!"
+                    registrarAcao $ "Produto deletado: ID " ++ show id
                 _ -> putStrLn "ID inválido. Tente novamente."
             exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
 
@@ -136,7 +146,8 @@ exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual = do
 
         Just 7 -> do
             putStrLn "Gerando relatório..."
-            putStrLn "não implementada"
+            gerarRelatorio
+            registrarAcao "Relatório gerado."
             exibirMenu refEstoque refFuncionarios hashCodigoCupom funcaoAtual
 
 
