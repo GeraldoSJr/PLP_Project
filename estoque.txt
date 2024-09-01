@@ -1,1 +1,1 @@
-Item {itemId = 1, itemNome = "abc", itemEstoque = 5, itemPreco = 2.0}
+Item {itemId = 1, itemNome = "213", itemEstoque = 23, itemPreco = 34.0}

@@ -1,0 +1,1 @@
+Item {itemId = 1, itemNome = "abc", itemEstoque = 5, itemPreco = 2.0}
