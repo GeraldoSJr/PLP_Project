@@ -13,7 +13,9 @@ main :: IO ()
 main = do
     hashCodigoCupom <- criarTabelaHashVazia
 
+    refEstoque <- newIORef []
+
     putStrLn "Bem-vindo à caixa registradora P.L.P.!"
     
-    exibirMenu hashCodigoCupom
+    exibirMenu refEstoque hashCodigoCupom
   
