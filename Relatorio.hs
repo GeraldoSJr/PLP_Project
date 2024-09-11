@@ -16,7 +16,6 @@ registrarAcao acao = do
 gerarRelatorio :: IO ()
 gerarRelatorio = do
     putStrLn "Gerando relatório consolidado..."
-    -- Aqui você pode adicionar a lógica para consolidar dados em um formato específico
     putStrLn "Relatório gerado e salvo em relatorio.txt"
 
 -- Função para limpar o relatório existente
