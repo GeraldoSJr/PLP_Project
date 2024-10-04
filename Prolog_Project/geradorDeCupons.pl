@@ -20,3 +20,9 @@ verificar_cupom(Cupom, TabelaHash) :-
     ->  format('Cupom ~w encontrado com desconto: ~w%~n', [Cupom, Desconto])
     ;   write('Cupom nao encontrado.'), nl
     ).
+
+remover_cupom(Cupom, TabelaHashAtual, TabelaHashAtualNova) :-
+    del_assoc(Cupom, TabelaHashAtual, TabelaHashAtualNova).
+
+pegar_desconto_cupom(Cupom, TabelaHash, Desconto) :-
+    get_assoc(Cupom, TabelaHash, Desconto).

@@ -27,7 +27,7 @@ executar(3, TabelaHashCupom) :-
 
 executar(4, TabelaHashCupom) :- 
     menu(TabelaHashCupom).
-    
+
 executar(5, TabelaHashCupom) :- 
     menu(TabelaHashCupom).
 
@@ -51,7 +51,13 @@ executar(9, TabelaHashCupom) :-
     menu(TabelaHashCupom).
 
 executar(10, TabelaHashCupom) :-
+    write('Digite o codigo do cupom: '),
+    read(CupomInput),
+    atom_number(CupomAtom, CupomInput),
+    pegar_desconto_cupom(CupomAtom, TabelaHashCupom, Desconto),
+    remover_cupom(CupomAtom, TabelaHashCupom, NovaTabelaHash),
     menu(TabelaHashCupom).
+
 
 executar(_, TabelaHashCupom) :-
     write('Opcao invalida! Tente novamente.'), nl,
