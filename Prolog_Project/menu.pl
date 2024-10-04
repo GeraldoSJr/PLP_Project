@@ -1,3 +1,4 @@
+:- module(menu, [menu/1]).
 
 menu(TabelaHashCupom) :-
     write('--- Menu Principal ---'), nl,
