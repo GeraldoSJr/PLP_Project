@@ -48,7 +48,8 @@ executar(9, TabelaHashCupom) :-
     menu(TabelaHashCupom). 
      
 executar("Sair",_) :-
-    write('Saindo do programa...'), nl.
+    write('Saindo do programa...'), nl,
+    halt.
 
 executar(_, TabelaHashCupom) :-
     write('Opcao invalida! Tente novamente.'), nl,
