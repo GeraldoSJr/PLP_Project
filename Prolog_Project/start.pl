@@ -1,0 +1,3 @@
+:- [geradorDeCupons].
+:- [menu].
+:- [main].
