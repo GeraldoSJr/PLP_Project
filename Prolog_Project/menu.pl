@@ -1,6 +1,7 @@
 :- module(menu, [menu/1]).
+:- use_module(geradorDeCupons).
 
-menu(TabelaHashCupom) :-
+menu(TabelaHashCupom) :- 
     write('--- Menu Principal ---'), nl,
     write('1. '), nl,
     write('2. '), nl,
@@ -37,28 +38,26 @@ executar(6, TabelaHashCupom) :-
 executar(7, TabelaHashCupom) :- 
     menu(TabelaHashCupom).
 
-executar(8, TabelaHashCupom) :-
+executar(8, TabelaHashCupom) :- 
     write('Digite a porcentagem de desconto: '),
     read(Desconto),
     gerar_cupom(TabelaHashCupom, Desconto, NovaTabelaHash),  
     menu(NovaTabelaHash).
 
-executar(9, TabelaHashCupom) :-
+executar(9, TabelaHashCupom) :- 
     write('Digite o codigo do cupom: '),
     read(CupomInput),
     atom_number(CupomAtom, CupomInput),
     verificar_cupom(CupomAtom, TabelaHashCupom),
     menu(TabelaHashCupom).
 
-executar(10, TabelaHashCupom) :-
+executar(10, TabelaHashCupom) :- 
     write('Digite o codigo do cupom: '),
     read(CupomInput),
-    atom_number(CupomAtom, CupomInput),
-    pegar_desconto_cupom(CupomAtom, TabelaHashCupom, Desconto),
-    remover_cupom(CupomAtom, TabelaHashCupom, NovaTabelaHash),
-    menu(TabelaHashCupom).
+    atom_number(CupomAtom, CupomInput),  % Converte para átomo
+    remover_cupom(CupomAtom, TabelaHashCupom, NovaTabelaHash, Desconto),  % Remove o cupom
+    menu(NovaTabelaHash).
 
-
-executar(_, TabelaHashCupom) :-
+executar(_, TabelaHashCupom) :- 
     write('Opcao invalida! Tente novamente.'), nl,
     menu(TabelaHashCupom).
