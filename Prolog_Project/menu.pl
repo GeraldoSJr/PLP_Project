@@ -11,7 +11,7 @@ menu(TabelaHashCupom) :-
     write('7. '), nl,
     write('8. Criar cupom desconto '), nl,
     write('9. Verificar cupom de desconto '), nl,
-    write('Sair'), nl,
+    write('Sair.'), nl,
     write('Escolha uma opcao: '),
     read(Opcao),
     executar(Opcao, TabelaHashCupom).
@@ -47,7 +47,7 @@ executar(8, TabelaHashCupom) :-
 executar(9, TabelaHashCupom) :-
     menu(TabelaHashCupom). 
      
-executar("Sair",_) :-
+executar("Sair.",_) :-
     write('Saindo do programa...'), nl,
     halt.
 
