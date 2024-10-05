@@ -1,11 +1,12 @@
 :- use_module(geradorDeCupons).
-
 :- use_module(menu).
+:- use_module(login).
 
-/* use [start]. para iniciar o programa.*/
+/* use [main]. to start the program. */
 main :-
     write('Bem-vindo a caixa registradora P.L.P.'), nl,
     empty_assoc(TabelaHashCupom),
-    menu(TabelaHashCupom).
+    Funcionarios = [],
+    menu(TabelaHashCupom, Funcionarios, none).
 
-:- main.
+:- initialization(main).

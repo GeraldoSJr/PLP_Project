@@ -1,10 +1,11 @@
-:- module(menu, [menu/1]).
+:- module(menu, [menu/3]).
 :- use_module(geradorDeCupons).
+:- use_module(login).
 
-menu(TabelaHashCupom) :- 
+menu(TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
     write('--- Menu Principal ---'), nl,
-    write('1. '), nl,
-    write('2. '), nl,
+    write('1. Criar login de acesso'), nl,
+    write('2. Efetuar login'), nl,
     write('3. '), nl,
     write('4. '), nl,
     write('5. '), nl,
@@ -13,51 +14,77 @@ menu(TabelaHashCupom) :-
     write('8. Criar cupom desconto '), nl,
     write('9. Verificar cupom de desconto '), nl,
     write('10. Aplicar desconto no produto'), nl,
+    write('11. Sair'), nl,
     write('Escolha uma opcao: '),
     read(Opcao),
-    executar(Opcao, TabelaHashCupom).
+    executar(Opcao, TabelaHashCupom, Funcionarios, FuncaoAtual).
 
-executar(1, TabelaHashCupom) :- 
-    menu(TabelaHashCupom).
+executar(1, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
+    write('Digite o nome de usuário: '), read(NomeUsuario),
+    write('Digite a senha: '), read(Senha),
+    write('Digite a função (gerente/caixa): '), read(Funcao),
+    (criar_login(NomeUsuario, Senha, Funcao, Funcionarios, NovosFuncionarios) ->
+        write('Login criado com sucesso!'), nl,
+        menu(TabelaHashCupom, NovosFuncionarios, FuncaoAtual)
+    ;
+        write('Falha ao criar login. Verifique os dados.'), nl,
+        menu(TabelaHashCupom, Funcionarios, FuncaoAtual)
+    ).
 
-executar(2, TabelaHashCupom) :- 
-    menu(TabelaHashCupom).
+executar(2, TabelaHashCupom, Funcionarios, _) :- 
+    write('Digite o nome de usuário: '), read(NomeUsuario),
+    write('Digite a senha: '), read(Senha),
+    efetuar_login(NomeUsuario, Senha, Funcionarios, NovaFuncao),
+    (NovaFuncao \= none ->
+        write('Login efetuado com sucesso como: '), write(NovaFuncao), nl,
+        menu(TabelaHashCupom, Funcionarios, NovaFuncao)
+    ; 
+        write('Falha no login. Verifique suas credenciais.'), nl,
+        menu(TabelaHashCupom, Funcionarios, none)
+    ).
 
-executar(3, TabelaHashCupom) :-     
-    menu(TabelaHashCupom).
+executar(3, TabelaHashCupom, Funcionarios, FuncaoAtual) :-     
+    menu(TabelaHashCupom, Funcionarios, FuncaoAtual).
 
-executar(4, TabelaHashCupom) :- 
-    menu(TabelaHashCupom).
+executar(4, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
+    menu(TabelaHashCupom, Funcionarios, FuncaoAtual).
 
-executar(5, TabelaHashCupom) :- 
-    menu(TabelaHashCupom).
+executar(5, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
+    menu(TabelaHashCupom, Funcionarios, FuncaoAtual).
 
-executar(6, TabelaHashCupom) :- 
-    menu(TabelaHashCupom).
+executar(6, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
+    menu(TabelaHashCupom, Funcionarios, FuncaoAtual).
 
-executar(7, TabelaHashCupom) :- 
-    menu(TabelaHashCupom).
+executar(7, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
+    menu(TabelaHashCupom, Funcionarios, FuncaoAtual).
 
-executar(8, TabelaHashCupom) :- 
-    write('Digite a porcentagem de desconto: '),
-    read(Desconto),
-    gerar_cupom(TabelaHashCupom, Desconto, NovaTabelaHash),  
-    menu(NovaTabelaHash).
+executar(8, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
+    (FuncaoAtual = gerente ->
+        write('Digite a porcentagem de desconto: '), read(Desconto),
+        gerar_cupom(TabelaHashCupom, Desconto, NovaTabelaHash),  
+        menu(NovaTabelaHash, Funcionarios, FuncaoAtual)
+    ; 
+        write('Acesso negado. Somente gerentes podem criar cupons.'), nl,
+        menu(TabelaHashCupom, Funcionarios, FuncaoAtual)
+    ).
 
-executar(9, TabelaHashCupom) :- 
-    write('Digite o codigo do cupom: '),
-    read(CupomInput),
+executar(9, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
+    write('Digite o código do cupom: '), read(CupomInput),
     atom_number(CupomAtom, CupomInput),
     verificar_cupom(CupomAtom, TabelaHashCupom),
-    menu(TabelaHashCupom).
+    menu(TabelaHashCupom, Funcionarios, FuncaoAtual).
 
-executar(10, TabelaHashCupom) :- 
-    write('Digite o codigo do cupom: '),
-    read(CupomInput),
-    atom_number(CupomAtom, CupomInput),  % Converte para átomo
-    remover_cupom(CupomAtom, TabelaHashCupom, NovaTabelaHash, Desconto),  % Remove o cupom
-    menu(NovaTabelaHash).
+executar(10, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
+    write('Digite o código do cupom: '), read(CupomInput),
+    atom_number(CupomAtom, CupomInput),
+    remover_cupom(CupomAtom, TabelaHashCupom, NovaTabelaHash, Desconto),
+    write('Desconto aplicado: '), write(Desconto), write('%'), nl,
+    menu(NovaTabelaHash, Funcionarios, FuncaoAtual).
 
-executar(_, TabelaHashCupom) :- 
-    write('Opcao invalida! Tente novamente.'), nl,
-    menu(TabelaHashCupom).
+executar(11, _, _, _) :- 
+    write('Obrigado por usar o sistema. Até logo!'), nl,
+    halt.
+
+executar(_, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
+    write('Opção inválida! Tente novamente.'), nl,
+    menu(TabelaHashCupom, Funcionarios, FuncaoAtual).
