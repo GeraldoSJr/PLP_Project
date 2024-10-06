@@ -162,3 +162,4 @@ ler_item_por_nome(Nome, Itens) :-
         fail
     ).
 
+

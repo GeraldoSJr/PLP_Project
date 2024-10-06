@@ -1,18 +1,20 @@
 :- module(menu, [menu/3]).
 :- use_module(geradorDeCupons).
 :- use_module(login).
+:- use_module(item).
+:- use_module(estoque).
 
 menu(TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
     write('--- Menu Principal ---'), nl,
     write('1. Criar login de acesso'), nl,
     write('2. Efetuar login'), nl,
-    write('3. '), nl,
-    write('4. '), nl,
-    write('5. '), nl,
-    write('6. '), nl,
-    write('7. '), nl,
-    write('8. Criar cupom desconto '), nl,
-    write('9. Verificar cupom de desconto '), nl,
+    write('3. Adicionar item'), nl,
+    write('4. Ler item'), nl,
+    write('5. Atualizar item'), nl,
+    write('6. Deletar item'), nl,
+    write('7. Listar itens'), nl,
+    write('8. Criar cupom desconto'), nl,
+    write('9. Verificar cupom de desconto'), nl,
     write('10. Aplicar desconto no produto'), nl,
     write('11. Sair'), nl,
     write('Escolha uma opcao: '),
@@ -43,19 +45,51 @@ executar(2, TabelaHashCupom, Funcionarios, _) :-
         menu(TabelaHashCupom, Funcionarios, none)
     ).
 
-executar(3, TabelaHashCupom, Funcionarios, FuncaoAtual) :-     
+executar(3, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
+    write('Digite o nome do item: '), read(Nome),
+    write('Digite a quantidade em estoque: '), read(Estoque),
+    write('Digite o preço: '), read(Preco),
+    (adicionar_item(Nome, Estoque, Preco) ->
+        write('Item adicionado com sucesso.'), nl
+    ;
+        write('Falha ao adicionar item.'), nl
+    ),
     menu(TabelaHashCupom, Funcionarios, FuncaoAtual).
 
 executar(4, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
+    write('Digite o ID do item: '), read(Id),
+    (ler_item(Id, Item) ->
+        write('Item encontrado: '), write(Item), nl
+    ;
+        write('Item não encontrado.'), nl
+    ),
     menu(TabelaHashCupom, Funcionarios, FuncaoAtual).
 
 executar(5, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
+    write('Digite o ID do item a ser atualizado: '), read(Id),
+    write('Digite o novo nome do item: '), read(Nome),
+    write('Digite a nova quantidade em estoque: '), read(Estoque),
+    write('Digite o novo preço: '), read(Preco),
+    (atualizar_item(Id, item(Nome, Estoque, Preco)) ->
+        write('Item atualizado com sucesso.'), nl
+    ;
+        write('Falha ao atualizar item.'), nl
+    ),
     menu(TabelaHashCupom, Funcionarios, FuncaoAtual).
 
 executar(6, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
+    write('Digite o ID do item a ser deletado: '), read(Id),
+    (deletar_item(Id) ->
+        write('Item deletado com sucesso.'), nl
+    ;
+        write('Falha ao deletar item.'), nl
+    ),
     menu(TabelaHashCupom, Funcionarios, FuncaoAtual).
 
 executar(7, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
+    listar_itens(Itens),
+    write('Itens disponíveis:'), nl,
+    forall(member(Item, Itens), write(Item), nl),
     menu(TabelaHashCupom, Funcionarios, FuncaoAtual).
 
 executar(8, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
@@ -75,15 +109,30 @@ executar(9, TabelaHashCupom, Funcionarios, FuncaoAtual) :-
     menu(TabelaHashCupom, Funcionarios, FuncaoAtual).
 
 executar(10, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
-    write('Digite o código do cupom: '), read(CupomInput),
+    write('Digite o código do cupom: '), 
+    read(CupomInput),
     atom_number(CupomAtom, CupomInput),
-    remover_cupom(CupomAtom, TabelaHashCupom, NovaTabelaHash, Desconto),
-    write('Desconto aplicado: '), write(Desconto), write('%'), nl,
+    (remover_cupom(CupomAtom, TabelaHashCupom, NovaTabelaHash, Desconto) ->
+        write('Desconto aplicado: '), write(Desconto), write('%'), nl,
+        write('Digite o ID do item para atualizar o preço: '), read(ItemID),
+        (ler_item(ItemID, item(Nome, Estoque, Preco)) ->
+            NovoPreco is Preco * (1 - Desconto / 100),  % Calcula o novo preço com desconto
+            atualizar_item(ItemID, item(Nome, Estoque, NovoPreco)),
+            write('Preço do item atualizado para: '), write(NovoPreco), nl
+        ;
+            write('Item não encontrado.'), nl
+        )
+    ;
+        write('Código do cupom inválido.'), nl
+    ),
     menu(NovaTabelaHash, Funcionarios, FuncaoAtual).
+
 
 executar(11, _, _, _) :- 
     write('Obrigado por usar o sistema. Até logo!'), nl,
     halt.
+
+
 
 executar(_, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
     write('Opção inválida! Tente novamente.'), nl,
