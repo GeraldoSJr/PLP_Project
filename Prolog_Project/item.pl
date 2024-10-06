@@ -3,7 +3,8 @@
     salvar_estoque/0,
     adicionar_item/3,
     ler_item/2,
-    atualizar_item/2,  % Atualizado para /2
+    atualizar_item/2,
+    atualizar_preco/2,  % Adicionada nova função
     deletar_item/1,
     listar_itens/1,
     obter_estoque/2,
@@ -12,6 +13,7 @@
     definir_preco/2,
     ler_item_por_nome/2
 ]).
+
 
 :- dynamic item/4.
 
@@ -161,5 +163,24 @@ ler_item_por_nome(Nome, Itens) :-
         format('Nenhum item com nome "~w" encontrado.~n', [Nome]),
         fail
     ).
+%% atualizar_precos_com_desconto(+Desconto)
+% Atualiza o preço de todos os itens no estoque com base no desconto.
+atualizar_precos_com_desconto(Desconto) :- 
+    findall(Id, item(Id, Nome, Estoque, Preco), Ids),  % Obtém todos os IDs dos itens
+    atualizar_precos(Ids, Desconto).
+
+%% atualizar_precos(+Ids, +Desconto)
+% Atualiza o preço de cada item com ID em Ids aplicando o desconto.
+atualizar_precos([], _).  % Caso base: lista vazia, não faz nada.
+atualizar_precos([Id | Resto], Desconto) :- 
+    (item(Id, Nome, Estoque, Preco) -> 
+        NovoPreco is Preco * (1 - Desconto / 100),  % Calcula o novo preço com desconto
+        retract(item(Id, Nome, Estoque, Preco)),
+        assertz(item(Id, Nome, Estoque, NovoPreco)),
+        format('Preço do item ID ~w atualizado para ~w.~n', [Id, NovoPreco])
+    ;
+        format('Item com ID ~w não encontrado para atualização de preço.~n', [Id])
+    ),
+    atualizar_precos(Resto, Desconto).  % Chama recursivamente para os restantes.
 
 

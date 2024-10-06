@@ -111,19 +111,16 @@ executar(9, TabelaHashCupom, Funcionarios, FuncaoAtual) :-
 executar(10, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
     write('Digite o código do cupom: '), 
     read(CupomInput),
-    atom_number(CupomAtom, CupomInput),
-    (remover_cupom(CupomAtom, TabelaHashCupom, NovaTabelaHash, Desconto) ->
-        write('Desconto aplicado: '), write(Desconto), write('%'), nl,
-        write('Digite o ID do item para atualizar o preço: '), read(ItemID),
-        (ler_item(ItemID, item(Nome, Estoque, Preco)) ->
-            NovoPreco is Preco * (1 - Desconto / 100),  % Calcula o novo preço com desconto
-            atualizar_item(ItemID, item(Nome, Estoque, NovoPreco)),
-            write('Preço do item atualizado para: '), write(NovoPreco), nl
+    ( atom_number(CupomAtom, CupomInput) -> 
+        (remover_cupom(CupomAtom, TabelaHashCupom, NovaTabelaHash, Desconto) ->
+            write('Desconto aplicado: '), write(Desconto), write('%'), nl,
+            atualizar_precos_com_desconto(Desconto),  % Atualiza todos os preços com o desconto
+            write('Todos os preços foram atualizados com desconto de: '), write(Desconto), write('%'), nl
         ;
-            write('Item não encontrado.'), nl
+            write('Código do cupom inválido.'), nl
         )
     ;
-        write('Código do cupom inválido.'), nl
+        write('Entrada inválida para o código do cupom.'), nl
     ),
     menu(NovaTabelaHash, Funcionarios, FuncaoAtual).
 
