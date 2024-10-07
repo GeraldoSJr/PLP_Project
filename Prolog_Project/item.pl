@@ -55,11 +55,13 @@ gerar_proximo_id(NovoId) :-
     ).
 
 %% validar_item(+Nome, +Estoque, +Preco)
-% Valida os dados do item.
+% Valida os dados do item, garantindo que Nome seja um átomo,
+% e que Estoque e Preco sejam números não negativos.
 validar_item(Nome, Estoque, Preco) :-
-    string(Nome),
+    atom(Nome),
     Estoque >= 0,
     Preco >= 0.0.
+
 
 %% adicionar_item(+Nome, +Estoque, +Preco)
 % Adiciona um novo item ao estoque.
