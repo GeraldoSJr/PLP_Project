@@ -1,0 +1,2 @@
+2024-10-06 19:57:10 - Sistema iniciado
+2024-10-06 19:57:21 - Login criado com sucesso
