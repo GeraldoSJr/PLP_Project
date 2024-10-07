@@ -4,7 +4,7 @@
     adicionar_item/3,
     ler_item/2,
     atualizar_item/2,
-    atualizar_precos/2,  % Adicionada nova função
+    atualizar_precos/2,
     deletar_item/1,
     listar_itens/1,
     obter_estoque/2,

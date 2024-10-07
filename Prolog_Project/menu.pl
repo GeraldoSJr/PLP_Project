@@ -5,6 +5,7 @@
 :- use_module(estoque).
 :- use_module(relatorio).  % Include the relatorio module
 
+
 menu(TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
     write('--- Menu Principal ---'), nl,
     write('1. Criar login de acesso'), nl,
@@ -100,12 +101,12 @@ executar(6, TabelaHashCupom, Funcionarios, FuncaoAtual) :-
         menu(TabelaHashCupom, Funcionarios, FuncaoAtual)
     ).
 
-executar(7, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
+executar(7, TabelaHashCupom, Funcionarios, UsuarioAtual) :-
+    write('Lista de itens:'), nl,
     listar_itens(Itens),
-    write('Itens disponíveis:'), nl,
-    forall(member(Item, Itens), write(Item), nl),
-    registrar_acao('Itens listados'),  % Log action
-    menu(TabelaHashCupom, Funcionarios, FuncaoAtual).
+    forall(member(item(Id, Nome, Estoque, Preco), Itens),
+            format('ID: ~w, Nome: ~w, Estoque: ~w, Preço: ~2f~n', [Id, Nome, Estoque, Preco])),
+    menu(TabelaHashCupom, Funcionarios, UsuarioAtual).
 
 executar(8, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
     (FuncaoAtual = gerente ->
@@ -128,10 +129,17 @@ executar(9, TabelaHashCupom, Funcionarios, FuncaoAtual) :-
 executar(10, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
     write('Digite o código do cupom: '), 
     read(CupomInput),
-    atom_number(CupomAtom, CupomInput),
+    (   integer(CupomInput)
+    ->  number_atom(CupomInput, CupomAtom)
+    ;   CupomAtom = CupomInput
+    ),
     (remover_cupom(CupomAtom, TabelaHashCupom, NovaTabelaHash, Desconto) ->
         write('Desconto aplicado: '), write(Desconto), write('%'), nl,
-        write('Digite o ID do item para atualizar o preço: '), read(ItemID),
+        write('Digite o ID do item para atualizar o preço: '), read(ItemIDInput),
+        (   integer(ItemIDInput)
+        ->  ItemID = ItemIDInput
+        ;   atom_number(ItemIDInput, ItemID)
+        ),
         (ler_item(ItemID, item(Nome, Estoque, Preco)) ->
             NovoPreco is Preco * (1 - Desconto / 100),
             atualizar_item(ItemID, item(Nome, Estoque, NovoPreco)),
