@@ -1,4 +1,4 @@
-- module(geradorDeCupons, [gerar_cupom/3, verificar_cupom/2, remover_cupom/4, aplicar_desconto/4, retirar_desconto/4]).
+- module(geradorDeCupons, [gerar_cupom/3, verificar_cupom/2, remover_cupom/4, aplicar_desconto/4, retirar_desconto/4 , get_desconto/3]).
 :- use_module(library(assoc)).
 :- use_module(estoque).  % Adicione esta linha para usar funções do estoque.pl
 
@@ -60,4 +60,7 @@ retirar_desconto(Cupom, EstoqueAtual, EstoqueNovo, TabelaHash) :-
     ;   write('Cupom não encontrado. Não foi possível retirar o desconto.'), nl,
         EstoqueNovo = EstoqueAtual
     ).
-
+% Recupera o desconto associado a um código de cupom.
+% get_desconto(+CupomHash, +TabelaHash, -Desconto)
+get_desconto(Cupom, TabelaHash, Desconto) :- 
+    get_assoc(Cupom, TabelaHash, Desconto).
