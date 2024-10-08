@@ -1,4 +1,7 @@
-2024-10-06 21:47:55 - Sistema iniciado
-2024-10-06 21:48:12 - Login criado com sucesso
-2024-10-06 21:48:38 - Login efetuado com sucesso
-2024-10-06 21:48:54 - Item adicionado
+2024-10-07 10:19:00 - Sistema iniciado
+2024-10-07 10:19:40 - Login criado com sucesso
+2024-10-07 10:19:52 - Login efetuado com sucesso
+2024-10-07 10:20:19 - Item adicionado
+2024-10-07 10:20:42 - Item lido
+2024-10-07 10:21:35 - Item atualizado
+2024-10-07 10:21:45 - Item lido

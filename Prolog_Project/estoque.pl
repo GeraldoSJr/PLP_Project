@@ -1,1 +1,1 @@
-item(1, "pão", 1, 2).
+item(1, paoamarelo, 5, 14).

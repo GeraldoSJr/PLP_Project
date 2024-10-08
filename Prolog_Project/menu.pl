@@ -127,31 +127,32 @@ executar(9, TabelaHashCupom, Funcionarios, FuncaoAtual) :-
     menu(TabelaHashCupom, Funcionarios, FuncaoAtual).
 
 executar(10, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
-    write('Digite o código do cupom: '), 
+    write('Digite o código do cupom: '),
     read(CupomInput),
     (   integer(CupomInput)
     ->  number_atom(CupomInput, CupomAtom)
     ;   CupomAtom = CupomInput
     ),
-    (remover_cupom(CupomAtom, TabelaHashCupom, NovaTabelaHash, Desconto) ->
+    (geradorDeCupons:remover_cupom(CupomAtom, Desconto) ->
         write('Desconto aplicado: '), write(Desconto), write('%'), nl,
         write('Digite o ID do item para atualizar o preço: '), read(ItemIDInput),
         (   integer(ItemIDInput)
         ->  ItemID = ItemIDInput
         ;   atom_number(ItemIDInput, ItemID)
         ),
-        (ler_item(ItemID, item(Nome, Estoque, Preco)) ->
+        (item:ler_item(ItemID, item(ItemID, Nome, Estoque, Preco)) ->
             NovoPreco is Preco * (1 - Desconto / 100),
-            atualizar_item(ItemID, item(Nome, Estoque, NovoPreco)),
+            item:atualizar_item(ItemID, item(Nome, Estoque, NovoPreco)),
             write('Preço do item atualizado para: '), write(NovoPreco), nl,
-            registrar_acao('Desconto aplicado ao item')  % Log action
+            registrar_acao('Desconto aplicado ao item ID ' + ItemID + ' com desconto ' + Desconto + '%')
         ;
             write('Item não encontrado.'), nl
         )
     ;
         write('Código do cupom inválido.'), nl
     ),
-    menu(NovaTabelaHash, Funcionarios, FuncaoAtual).
+    geradorDeCupons:salvar_cupons.
+    menu(TabelaHashCupom, Funcionarios, FuncaoAtual).
 
 executar(11, TabelaHashCupom, Funcionarios, FuncaoAtual) :- 
     gerar_relatorio,  % Generate report
